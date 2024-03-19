@@ -23,7 +23,7 @@ class UserAuthController extends BaseController
             $token = $request->json('token');
             $decoded = JWT::decode($token, new Key(env('JWT_SECRET'), 'HS256'));
             $userID = $decoded->userID;
-            $user = User::where('userID', $userID)->with('organization')->first();
+            $user = User::where('userID', $userID)->with('account')->first();
 
             if (empty($user)) {
                 throw new Exception('User not found', 404);
@@ -44,7 +44,7 @@ class UserAuthController extends BaseController
             ]);
 
             $email = $request->json('email');
-            $user = User::where('email', $email)->with('organization')->first();
+            $user = User::where('email', $email)->with('account')->first();
 
             $password = $request->json('password');
             if (empty($user) || Hash::check($password, $user->password) === false) {

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Organization;
+use App\Models\Account;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 
@@ -23,28 +23,28 @@ class UsersSeeder extends Seeder
     {
         $swiftsalesAdminUsers = [
             [
-                'organizationID' => Organization::all()->random()->organizationID,
+                'accountID' => Account::all()->random()->accountID,
                 'firstName' => 'Henri',
                 'lastName' => 'Willman',
                 'email' => 'henri.willman@swiftsales.fi',
                 'password' => password_hash('test', PASSWORD_BCRYPT)
             ],
             [
-                'organizationID' => Organization::all()->random()->organizationID,
+                'accountID' => Account::all()->random()->accountID,
                 'firstName' => 'Otto',
                 'lastName' => 'Örn',
                 'email' => 'otto.orn@swiftsales.fi',
                 'password' => password_hash('test', PASSWORD_BCRYPT)
             ],
             [
-                'organizationID' => Organization::all()->random()->organizationID,
+                'accountID' => Account::all()->random()->accountID,
                 'firstName' => 'Santeri',
                 'lastName' => 'Pohjakallio',
                 'email' => 'santeri.pohjakallio@swiftsales.fi',
                 'password' => password_hash('test', PASSWORD_BCRYPT)
             ],
             [
-                'organizationID' => Organization::all()->random()->organizationID,
+                'accountID' => Account::all()->random()->accountID,
                 'firstName' => 'Miska',
                 'lastName' => 'Lampinen',
                 'email' => 'miska.lampinen@swiftsales.fi',

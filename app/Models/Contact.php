@@ -8,13 +8,13 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Lead extends BaseModel implements AuthenticatableContract, AuthorizableContract
+
+class Contact extends BaseModel implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
 
-    protected $primaryKey = 'leadID';
+    protected $primaryKey = 'contactID';
 
     /**
      * @var string
@@ -24,17 +24,19 @@ class Lead extends BaseModel implements AuthenticatableContract, AuthorizableCon
     protected $fillable = [
         'userID',
         'companyID',
-        'name',
-        'description',
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
     ];
 
     public static function getValidationRules(array $fieldsToValidate): array
     {
         $validationRules =  [
-            'userID' => ['integer', 'required', 'exists:users,userID'],
-            'companyID' => ['integer', 'required', 'exists:companies,companyID'],
-            'name' => ['string', 'required', 'max:100'],
-            'description' => ['string', 'max:1000'],
+            'firstName' => ['string', 'max:100'],
+            'lastName' => ['string', 'max:100'],
+            'email' => ['email', 'required', 'max:100'],
+            'phone' => ['string', 'max:20'],
         ];
 
         if (
@@ -57,10 +59,5 @@ class Lead extends BaseModel implements AuthenticatableContract, AuthorizableCon
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'companyID', 'companyID');
-    }
-
-    public function contacts(): HasMany
-    {
-        return $this->hasMany(Contact::class, 'companyID', 'companyID');
     }
 }

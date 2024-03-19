@@ -18,16 +18,16 @@ class init extends Migration
         /**
          * Lumen table, required for DB job queue
          */
-        Schema::create('organizations', function (Blueprint $table) {
-            $table->increments('organizationID');
-            $table->string('organizationName', 100)->default('');
+        Schema::create('accounts', function (Blueprint $table) {
+            $table->increments('accountID');
+            $table->string('accountName', 100)->default('');
             $table->string('licenseType', 100)->default('basic');
             $table->timestamps();
         });
 
         Schema::create('users', function (Blueprint $table) {
             $table->increments('userID');
-            $table->unsignedInteger('organizationID');
+            $table->unsignedInteger('accountID');
             $table->string('firstName', 100)->default('');
             $table->string('lastName', 100)->default('');
             $table->string('email', 100)->unique();
@@ -36,16 +36,27 @@ class init extends Migration
             $table->string('password', 200);
             $table->timestamps();
 
-            $table->foreign('organizationID')->references('organizationID')->on('organizations')->onDelete('cascade');
+            $table->foreign('accountID')->references('accountID')->on('accounts')->onDelete('cascade');
         });
 
-        Schema::create('jobs', function (Blueprint $table) {
-            $table->increments('jobID');
+        Schema::create('companies', function (Blueprint $table) {
+            $table->increments('companyID');
             $table->unsignedInteger('userID');
-            $table->boolean('isSuccessful')->default(false);
-            $table->string('jobType', 100)->default('');
-            $table->string('status', 100)->default('');
-            $table->string('errorMessage', 1000)->nullable();
+            $table->string('companyName', 100)->default('');
+            $table->string('businessID', 100)->default('');
+            $table->timestamps();
+
+            $table->foreign('userID')->references('userID')->on('users')->onDelete('cascade');
+        });
+
+        Schema::create('contacts', function (Blueprint $table) {
+            $table->increments('contactID');
+            $table->unsignedInteger('userID');
+            $table->unsignedInteger('companyID')->nullable();
+            $table->string('firstName', 100)->default('');
+            $table->string('lastName', 100)->default('');
+            $table->string('email', 100)->default('');
+            $table->string('phone', 20)->default('');
             $table->timestamps();
 
             $table->foreign('userID')->references('userID')->on('users')->onDelete('cascade');
@@ -54,12 +65,8 @@ class init extends Migration
         Schema::create('leads', function (Blueprint $table) {
             $table->increments('leadID');
             $table->unsignedInteger('userID');
-            $table->string('businessID', 100)->default('');
-            $table->string('companyName', 100)->default('');
-            $table->string('contactPerson', 100)->default('');
-            $table->string('contactPhone', 100)->default('');
-            $table->string('contactEmail', 100)->default('');
-            $table->string('header', 100)->default('');
+            $table->unsignedInteger('companyID');
+            $table->string('name', 100)->default('');
             $table->string('description', 1000)->default('');
             $table->timestamps();
 

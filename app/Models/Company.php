@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Lead extends BaseModel implements AuthenticatableContract, AuthorizableContract
+
+class Company extends BaseModel implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
 
-    protected $primaryKey = 'leadID';
+    protected $primaryKey = 'companyID';
 
     /**
      * @var string
@@ -23,18 +24,15 @@ class Lead extends BaseModel implements AuthenticatableContract, AuthorizableCon
 
     protected $fillable = [
         'userID',
-        'companyID',
-        'name',
-        'description',
+        'companyName',
+        'businessID',
     ];
 
     public static function getValidationRules(array $fieldsToValidate): array
     {
         $validationRules =  [
-            'userID' => ['integer', 'required', 'exists:users,userID'],
-            'companyID' => ['integer', 'required', 'exists:companies,companyID'],
-            'name' => ['string', 'required', 'max:100'],
-            'description' => ['string', 'max:1000'],
+            'companyName' => ['string', 'required', 'max:100'],
+            'businessID' => ['string', 'max:100'],
         ];
 
         if (
@@ -52,11 +50,6 @@ class Lead extends BaseModel implements AuthenticatableContract, AuthorizableCon
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'userID', 'userID');
-    }
-
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(Company::class, 'companyID', 'companyID');
     }
 
     public function contacts(): HasMany

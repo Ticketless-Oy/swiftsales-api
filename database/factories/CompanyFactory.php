@@ -2,18 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Models\Organization;
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Faker\Factory as Faker;
 
-class OrganizationFactory extends Factory
+class CompanyFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Organization::class;
+    protected $model = Company::class;
 
     /**
      * Define the model's default state.
@@ -22,14 +23,17 @@ class OrganizationFactory extends Factory
      */
     public function definition()
     {
-        $faker = Faker::create('fi_FI');
 
-        $organizationName = $faker->company;
-        $licenseType = $faker->randomElement(['basic', 'pro', 'premium']);
+        $faker = Faker::create('fi_FI');
+        $companyName = $faker->company;
+        $businessID = $faker->randomNumber(7);
+
+        $userID = User::all()->random()->userID;
 
         return [
-            'organizationName' => $organizationName,
-            'licenseType' => $licenseType
+            'userID' => $userID,
+            'companyName' => $companyName,
+            'businessID' => $businessID,
         ];
     }
 }

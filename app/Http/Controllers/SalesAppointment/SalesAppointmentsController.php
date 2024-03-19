@@ -60,13 +60,19 @@ class SalesAppointmentsController extends BaseController
         }
     }
 
-    public function getSingle(int $userID, int $salesAppointmentID, Request $request): JsonResponse
+    public function getSingle(int $salesAppointmentID, Request $request): JsonResponse
     {
         try {
-            $this->verifyAccessToResource($userID, $request);
             $salesAppointment = SalesAppointment::where('salesAppointmentID', $salesAppointmentID)
                 ->with('salesAppointmentFiles')
                 ->first();
+
+            if (!$salesAppointment) {
+                throw new NotFoundException('SalesAppointment not found');
+            }
+
+            $userID = $salesAppointment->userID;
+            $this->verifyAccessToResource($userID, $request);
 
             $response = $this->createResponseData($salesAppointment, 'object');
             return response()->json($response);

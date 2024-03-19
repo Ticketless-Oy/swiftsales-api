@@ -6,7 +6,7 @@ use Laravel\Lumen\Testing\TestCase as BaseTestCase;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use App\Managers\AuthManager\AuthManager;
-use App\Models\Organization;
+use App\Models\Account;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -69,14 +69,14 @@ abstract class TestCase extends BaseTestCase
 
     private static function seedDatabase(): void
     {
-        $testOrganization = Organization::factory()->create([
-            'organizationName' => 'Bobs organization',
+        $testAccount = Account::factory()->create([
+            'accountName' => 'Bobs account',
             'licenseType' => 'basic'
         ]);
 
 
         User::factory()->create([
-            'organizationID' => $testOrganization->organizationID,
+            'accountID' => $testAccount->accountID,
             'firstName' => 'Bob',
             'lastName' => 'Swift',
             'email' => 'bob.swift@swiftsales.fi',

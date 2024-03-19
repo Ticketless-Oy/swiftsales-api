@@ -43,6 +43,29 @@ class SalesAppointment extends BaseModel implements AuthenticatableContract, Aut
 
     protected SalesAppointmentFile $salesAppointmentFiles;
 
+    public function getValidationRules(array $fieldsToValidate): array
+    {
+        $validationRules =  [
+            'userID' => ['integer', 'required', 'exists:users,userID'],
+            'leadID' => ['integer', 'required', 'exists:leads,leadID'],
+            'notes' => ['string', 'max:1000'],
+            'meetingUrl' => ['string', 'max:1000'],
+            'meetingExpiryTime' => ['date'],
+            'isCustomerAllowedToShareFiles' => ['boolean'],
+        ];
+
+        if (
+            empty($fieldsToValidate)
+        ) {
+            return $validationRules;
+        }
+
+        // Filter the rules based on the posted fields
+        $filteredRules = array_intersect_key($validationRules, $fieldsToValidate);
+
+        return $filteredRules;
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'userID', 'userID');

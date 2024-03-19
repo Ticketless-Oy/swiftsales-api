@@ -11,6 +11,7 @@ use App\Exceptions\CustomValidationException\CustomValidationException;
 use Illuminate\Validation\ValidationException;
 use App\Managers\ImportManager\ImportManager;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class LeadsController extends BaseController
 {
@@ -24,7 +25,11 @@ class LeadsController extends BaseController
     {
         try {
             $this->verifyAccessToResource($userID, $request);
-            $leads = Lead::where('userID', $userID)->get();
+            $leads = Lead::where('userID', $userID)
+                ->with('company')
+                ->with('company.contacts')
+                ->get();
+
             $response = $this->createResponseData($leads, 'array');
             return response()->json($response);
         } catch (Exception $e) {
@@ -32,14 +37,21 @@ class LeadsController extends BaseController
         }
     }
 
-    public function getSingle(int $userID, int $leadID, Request $request): JsonResponse
+    public function getSingle(int $leadID, Request $request): JsonResponse
     {
         try {
-            $this->verifyAccessToResource($userID, $request);
-            $lead = Lead::where('userID', $userID)->where('leadID', $leadID)->first();
+            $lead = Lead::where('leadID', $leadID)
+                ->with('company')
+                ->with('company.contacts')
+                ->first();
+
             if (!$lead) {
                 throw new NotFoundException('Lead not found');
             }
+
+            $userIDInLead = $lead->userID;
+            $this->verifyAccessToResource($userIDInLead, $request);
+
             $response = $this->createResponseData($lead, 'object');
             return response()->json($response);
         } catch (Exception $e) {
@@ -50,7 +62,7 @@ class LeadsController extends BaseController
     public function create(Request $request): JsonResponse
     {
         try {
-            $this->validate($request, Lead::getValidationRules());
+            $this->validate($request, Lead::getValidationRules([]));
             $lead = Lead::create($request->all());
             $response = $this->createResponseData($lead, 'object');
             return response()->json($response, 201);
@@ -118,6 +130,17 @@ class LeadsController extends BaseController
             $this->verifyAccessToResource($userIDInLead, $request);
             $lead->delete();
             return response()->json(['success' => 'Lead deleted'], 200);
+        } catch (Exception $e) {
+            return $this->handleError($e);
+        }
+    }
+
+    public function salesforceTest(Request $request): JsonResponse
+    {
+        try {
+            Log::error('Salesforce test');
+            Log::error($request);
+            return response()->json(['success' => 'Leads imported from Salesforce'], 200);
         } catch (Exception $e) {
             return $this->handleError($e);
         }

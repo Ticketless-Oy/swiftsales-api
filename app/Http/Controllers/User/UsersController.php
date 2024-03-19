@@ -24,7 +24,7 @@ class UsersController extends BaseController
     {
         try {
             $userID = $request->json('userID');
-            $user = User::where('userID', $userID)->with('organization')->first();
+            $user = User::where('userID', $userID)->with('account')->first();
 
             if (!$user) {
                 throw new NotFoundException('User not found');

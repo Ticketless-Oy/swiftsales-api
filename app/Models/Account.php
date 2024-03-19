@@ -7,23 +7,26 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class File extends BaseModel implements AuthenticatableContract, AuthorizableContract
+
+class Account extends BaseModel implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
 
-    protected $primaryKey = 'fileID';
+    protected $primaryKey = 'accountID';
+    protected $table = 'accounts';
 
     protected $fillable = [
-        'fileName',
-        'filePath',
+        'accountName',
+        'licenseType'
     ];
 
-    public static function getValidationRules(array $fieldsToValidate): array
+    public function getValidationRules(array $fieldsToValidate): array
     {
         $validationRules =  [
-            'fileName' => ['string', 'required'],
-            'filePath' => ['string'],
+            'accountName' => ['string', 'required', 'max:100'],
+            'licenseType' => ['string', 'required', 'in:basic,pro'],
         ];
 
         if (
@@ -36,5 +39,10 @@ class File extends BaseModel implements AuthenticatableContract, AuthorizableCon
         $filteredRules = array_intersect_key($validationRules, $fieldsToValidate);
 
         return $filteredRules;
+    }
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'accountID', 'accountID');
     }
 }

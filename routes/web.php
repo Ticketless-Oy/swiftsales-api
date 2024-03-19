@@ -28,16 +28,20 @@ $router->group(['middleware' => App\Http\Middleware\AuthenticateMiddleware::clas
     $router->patch('users', 'User\UsersController@update');
 
     $router->get('users/{userID}/leads', 'Lead\LeadsController@getAllByUserID');
-    $router->get('users/{userID}/leads/{leadID}', 'Lead\LeadsController@getSingle');
+    $router->get('leads/{leadID}', 'Lead\LeadsController@getSingle');
     $router->post('leads', 'Lead\LeadsController@create');
     $router->post('leads/batch', 'Lead\LeadsController@createBatch');
     $router->patch('leads', 'Lead\LeadsController@update');
     $router->delete('leads', 'Lead\LeadsController@deleteSingle');
 
     $router->get('users/{userID}/sales-appointments', 'SalesAppointment\SalesAppointmentsController@getAllByUserID');
-    $router->get('users/{userID}/sales-appointments/{salesAppointmentID}', 'SalesAppointment\SalesAppointmentsController@getSingle');
+    $router->get('sales-appointments/{salesAppointmentID}', 'SalesAppointment\SalesAppointmentsController@getSingle');
     $router->post('sales-appointments', 'SalesAppointment\SalesAppointmentsController@create');
     $router->patch('sales-appointments', 'SalesAppointment\SalesAppointmentsController@update');
     $router->delete('sales-appointments', 'SalesAppointment\SalesAppointmentsController@deleteSingle');
     $router->post('sales-appointments/{salesAppointmentID}/renew-meeting-url', 'SalesAppointment\SalesAppointmentsController@renewMeetingUrl');
+
+    $router->get('users/{userID}/companies', 'Company\CompaniesController@getAllByUserID');
+
+    $router->post('salesforce', 'Lead\LeadsController@salesforceTest');
 });

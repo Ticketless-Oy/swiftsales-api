@@ -9,6 +9,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: "192.168.33.10"
   config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.synced_folder ".", "/var/www/swiftsales-api" # Sync current folder to VM
+
   config.vm.hostname = "swiftsales-api-local"
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -29,7 +30,6 @@ Vagrant.configure("2") do |config|
     apt-get -y install php8.1-fpm php8.1-mysql php8.1-curl zip unzip php8.1-zip php8.1-xdebug php8.1-xml php8.1-mbstring php8.1-gd php8.1-apcu php8.1-intl php8.1-soap php8.1-bcmath
     curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.11"
     apt-get -y install mariadb-server mariadb-client
-
 
     # Stop and disable Apache if it's running
     sudo systemctl stop apache2

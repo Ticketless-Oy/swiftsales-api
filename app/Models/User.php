@@ -19,25 +19,36 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
     /**
      * @var string
      */
-    protected $foreignKey = 'organizationID';
+    protected $foreignKey = 'accountID';
 
     protected $fillable = [
-        'firstName', 'lastName', 'email', 'password', 'timeZone', 'userType', 'organization'
+        'firstName', 'lastName', 'email', 'password', 'timeZone', 'userType', 'account'
     ];
 
     protected $hidden = ['password'];
 
-    public function getValidationRules(): array
+    public static function getValidationRules(array $fieldsToValidate): array
     {
-        return [
+        $validationRules =  [
             'firstName' => ['string', 'required'],
             'lastName' => ['string', 'required'],
             'email' => ['email', 'required', 'unique:users'],
             'timeZone' => ['string', 'required'], // TODO: validate timezone
-            'userType' => ['string', 'required', 'in:user,admin'],
-            'organization' => ['string', 'nullable'],
+            'userType' => ['string', 'required', 'in:user,admin,superadmin'],
+            'account' => ['string', 'required', 'nullable'],
             'password' => ['string', 'required', 'min:8']
         ];
+
+        if (
+            empty($fieldsToValidate)
+        ) {
+            return $validationRules;
+        }
+
+        // Filter the rules based on the posted fields
+        $filteredRules = array_intersect_key($validationRules, $fieldsToValidate);
+
+        return $filteredRules;
     }
 
     public function leads(): HasMany
@@ -50,8 +61,8 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         return $this->hasMany(SalesAppointment::class, 'userID', 'userID');
     }
 
-    public function organization(): BelongsTo
+    public function account(): BelongsTo
     {
-        return $this->belongsTo(Organization::class, 'organizationID', 'organizationID');
+        return $this->belongsTo(Account::class, 'accountID', 'accountID');
     }
 }
